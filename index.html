@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>logger</title>
+</head>
+<body>
+  <img src="./aa/a.jpg" alt="">
+  <img src="./aa/b.jpg" alt="">
+</body>
+<script src="./logger.js"></script>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="./ajax.js"></script>
+<script>
+  $.ajax({
+    url: 'http://www.daiwei.org/vue/server/home.php?inAjax=1&do=isNeedUpdate'
+  })
+  $.ajax({
+    url: 'http://www.daiwei.org/vue/server/home.php?inAjax=1&do=getImageByBingJson'
+  })
+</script>
+</html>
