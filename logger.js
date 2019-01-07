@@ -4,9 +4,23 @@ var Logger = /** @class */ (function () {
         this.initErrorEvent();
     }
     Logger.prototype.getTiming = function () {
-        return {
-            dns: this.timing.domainLookupEnd - this.timing.domainLookupStart
+        var _return = {
+            // DNS查询耗时
+            dnsT: this.timing.domainLookupEnd - this.timing.domainLookupStart,
+            // 白屏时间
+            loadT: this.timing.responseStart - this.timing.navigationStart,
+            // request请求耗时
+            requestT: this.timing.responseEnd - this.timing.responseStart,
+            // TCP链接耗时
+            tcpT: this.timing.connectEnd - this.timing.connectStart,
+            // 解析dom树耗时
+            renderDomT: this.timing.domComplete - this.timing.domInteractive,
+            // domready时间(用户可操作时间节点) 
+            readyDomT: this.timing.domContentLoadedEventEnd - this.timing.navigationStart,
+            // onload时间(总下载时间)
+            onLoadT: this.timing.loadEventEnd - this.timing.navigationStart
         };
+        return _return;
     };
     /**
      * 初始化error监听事件
@@ -40,4 +54,14 @@ var Logger = /** @class */ (function () {
     };
     return Logger;
 }());
-window.logger = new Logger();
+window.onload = function () {
+    window.logger = new Logger();
+    // console.log(logger.timing.loadEventEnd);
+    // console.log(logger.timing.navigationStart);
+    // console.log(logger.timing.loadEventEnd - logger.timing.navigationStart);
+    // console.log(logger.timing);
+    // console.log(logger.getTiming());
+    setTimeout(function () {
+        console.log(logger.getTiming());
+    }, 300);
+};

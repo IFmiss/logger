@@ -5,9 +5,23 @@ class Logger {
     this.initErrorEvent()
   }
   public getTiming (): any {
-    return {
-      dns: this.timing.domainLookupEnd - this.timing.domainLookupStart,
+    var _return = {
+      // DNS查询耗时
+      dnsT: this.timing.domainLookupEnd - this.timing.domainLookupStart,
+      // 白屏时间
+      loadT: this.timing.domLoading - this.timing.navigationStart,
+      // request请求耗时
+      requestT: this.timing.responseEnd - this.timing.responseStart,
+      // TCP链接耗时
+      tcpT: this.timing.connectEnd - this.timing.connectStart,
+      // 解析dom树耗时
+      renderDomT: this.timing.domComplete - this.timing.domInteractive,
+      // domready时间(用户可操作时间节点) 
+      readyDomT: this.timing.domContentLoadedEventEnd - this.timing.navigationStart,
+      // onload时间(总下载时间)
+      onLoadT: this.timing.loadEventEnd - this.timing.navigationStart
     }
+    return _return
   }
 
   /**
@@ -39,8 +53,23 @@ class Logger {
    * 事件错误的回调事件
    */
   public fetchError (data: object): void {
-    console.log('data', data)
+    window._ajax('data', data)
+  }
+
+  /**
+   * 页面加载时长的数据信息
+   */
+  public fetchPageLoadInfo (): void {
+    var timingInfo = this.getTiming()
+    // window._ajax('data', timingInfo)
+    console.log(timingInfo)
   }
 }
 
-window.logger = new Logger()
+window.onload = function (): void {
+  window.logger = new Logger();
+
+  setTimeout(function() {
+    logger.fetchPageLoadInfo()
+  }, 1000)
+}
