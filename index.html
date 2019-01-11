@@ -119,7 +119,7 @@
             <button class="user-sub tmsLandingFormBtn">立即预约1对1诊断</button>
             <div class="agree-info">
               <input name="agreeinfo" type="checkbox" checked/>
-              <span>我已阅读并同意<a href="#">海风用户注册协议</a>和<a href="#">隐私政策</a></span>
+              <span>我已阅读并同意<a href="javascript:void(0)" onclick="showRules()">海风用户注册协议</a>和<a href="javascript:void(0)" onclick="showPrivacy()">隐私政策</a></span>
             </div>
           </form>
         </div>
@@ -449,7 +449,7 @@
             <button class="user-sub tmsLandingFormBtn">立即预约1对1诊断</button>
             <div class="agree-info">
               <input name="agreeinfo" type="checkbox" checked/>
-              <span>我已阅读并同意<a href="#">海风用户注册协议</a>和<a href="#">隐私政策</a></span>
+              <span>我已阅读并同意<a href="javascript:void(0)" onclick="showRules()">海风用户注册协议</a>和<a href="javascript:void(0)" onclick="showPrivacy()">隐私政策</a></span>
             </div>
           </form>
         </div>
@@ -783,18 +783,19 @@
 <script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
 <script src="./ajax.js"></script>
 <script>
-  $.ajax({
-    url: 'http://www.daiwei.org/vue/server/home.php?inAjax=1&do=isNeedUpdate',
-    success: function (data) {
-      console.log(222222)
-    }
-  })
-  $.ajax({
-    url: 'http://www.daiwei.org/vue/server/home.php?inAjax=1&do=getImageByBingJson',
-    success: function (data) {
-      console.log(333333)
-      console.log(data)
-    }
-  })
+  bbbbb
+  // $.ajax({
+  //   url: 'http://www.daiwei.org/vue/server/home.php?inAjax=1&do=isNeedUpdate',
+  //   success: function (data) {
+  //     console.log(222222)
+  //   }
+  // })
+  // $.ajax({
+  //   url: 'http://www.daiwei.org/vue/server/home.php?inAjax=1&do=getImageByBingJson',
+  //   success: function (data) {
+  //     console.log(333333)
+  //     console.log(data)
+  //   }
+  // })
 </script>
 </html>

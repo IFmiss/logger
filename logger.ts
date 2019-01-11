@@ -1,5 +1,7 @@
 class Logger {
-  timing: object
+  timing: {
+    [propName: string]: any
+  }
   constructor () {
     this.timing = window.performance.timing
     this.initErrorEvent()
@@ -36,24 +38,39 @@ class Logger {
      * @param {Object}  errorObj       错误信息Object
      */
     var _this = this
-    window.onerror = function(errorMessage, scriptURL, lineNumber,columnNumber,errorObj) { 
-      setTimeout(() => {
-        _this.fetchError({
-          errorMessage,
-          scriptURL,
-          lineNumber,
-          columnNumber,
-          errorObj
-        })
+    
+    window.addEventListener('error', function (e) {
+      setTimeout(function () {
+        _this.staticError({
+          errorMessage: e.message,
+          scriptURL: e.filename,
+          lineNumber: e.lineno,
+          columnNumber: e.colno,
+          errorObj: e.error
+        });
       }, 0);
-    }
+    })
   }
 
   /**
    * 事件错误的回调事件
    */
-  public fetchError (data: object): void {
-    window._ajax('data', data)
+  public staticError (data: {
+    [propName: string]: any
+  }): void {
+    $.ajax({
+      url: 'http://web-monitor.hfjy.com/api/web/monitor',
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        url: window.location.href,
+        current_time: new Date().getTime(),
+        js_url: data.scriptURL,
+        error_info: data.errorMessage,
+        error_line: data.lineNumber,
+        error_column: data.columnNumber
+      }
+    })
   }
 
   /**
@@ -61,15 +78,23 @@ class Logger {
    */
   public fetchPageLoadInfo (): void {
     var timingInfo = this.getTiming()
-    // window._ajax('data', timingInfo)
-    console.log(timingInfo)
+    $.ajax({
+      url: 'http://web-monitor.hfjy.com/api/web/monitor',
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        url: window.location.href,
+        current_time: new Date().getTime(),
+        response_time: timingInfo.loadT
+      }
+    })
   }
 }
 
-window.onload = function (): void {
-  window.logger = new Logger();
+window.logger = new Logger();
+window.addEventListener('load', function () {
+    setTimeout(function () {
+        logger.fetchPageLoadInfo();
+    }, 1000);
+}, false);
 
-  setTimeout(function() {
-    logger.fetchPageLoadInfo()
-  }, 1000)
-}

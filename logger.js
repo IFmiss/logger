@@ -8,7 +8,7 @@ var Logger = /** @class */ (function () {
             // DNS查询耗时
             dnsT: this.timing.domainLookupEnd - this.timing.domainLookupStart,
             // 白屏时间
-            loadT: this.timing.responseStart - this.timing.navigationStart,
+            loadT: this.timing.domLoading - this.timing.navigationStart,
             // request请求耗时
             requestT: this.timing.responseEnd - this.timing.responseStart,
             // TCP链接耗时
@@ -34,34 +34,57 @@ var Logger = /** @class */ (function () {
          * @param {Object}  errorObj       错误信息Object
          */
         var _this = this;
-        window.onerror = function (errorMessage, scriptURL, lineNumber, columnNumber, errorObj) {
+        window.addEventListener('error', function (e) {
             setTimeout(function () {
-                _this.fetchError({
-                    errorMessage: errorMessage,
-                    scriptURL: scriptURL,
-                    lineNumber: lineNumber,
-                    columnNumber: columnNumber,
-                    errorObj: errorObj
+                _this.staticError({
+                    errorMessage: e.message,
+                    scriptURL: e.filename,
+                    lineNumber: e.lineno,
+                    columnNumber: e.colno,
+                    errorObj: e.error
                 });
             }, 0);
-        };
+        });
     };
     /**
      * 事件错误的回调事件
      */
-    Logger.prototype.fetchError = function (data) {
-        console.log('data', data);
+    Logger.prototype.staticError = function (data) {
+        $.ajax({
+            url: '',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                url: window.location.href,
+                current_time: new Date().getTime(),
+                js_url: data.scriptURL,
+                error_info: data.errorMessage,
+                error_line: data.lineNumber,
+                error_column: data.columnNumber
+            }
+        });
+    };
+    /**
+     * 页面加载时长的数据信息
+     */
+    Logger.prototype.fetchPageLoadInfo = function () {
+        var timingInfo = this.getTiming();
+        $.ajax({
+            url: '',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                url: window.location.href,
+                current_time: new Date().getTime(),
+                response_time: timingInfo.loadT
+            }
+        });
     };
     return Logger;
 }());
-window.onload = function () {
-    window.logger = new Logger();
-    // console.log(logger.timing.loadEventEnd);
-    // console.log(logger.timing.navigationStart);
-    // console.log(logger.timing.loadEventEnd - logger.timing.navigationStart);
-    // console.log(logger.timing);
-    // console.log(logger.getTiming());
+window.logger = new Logger();
+window.addEventListener('load', function () {
     setTimeout(function () {
-        console.log(logger.getTiming());
-    }, 300);
-};
+        logger.fetchPageLoadInfo();
+    }, 1000);
+}, false);
